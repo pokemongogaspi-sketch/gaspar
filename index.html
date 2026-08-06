@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión Cumpleaños 🎁</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#111,#222);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    text-align:center;
+}
+
+.container{
+    width:90%;
+    max-width:700px;
+    background:#1e1e1e;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 30px rgba(255,255,255,0.1);
+}
+
+h1{
+    color:#ffd700;
+}
+
+input{
+    width:80%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-top:20px;
+    font-size:18px;
+}
+
+button{
+    margin-top:15px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:#ffd700;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.hidden{
+    display:none;
+}
+
+.success{
+    color:#7CFC00;
+    margin-top:15px;
+}
+
+.final{
+    animation:fadeIn 2s;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🎁 Misión Cumpleaños 🎁</h1>
+
+    <div id="game">
+        <p id="question"></p>
+
+        <input type="text" id="answer" placeholder="Escribe tu respuesta">
+        <br>
+        <button onclick="checkAnswer()">Responder</button>
+
+        <p id="feedback" class="success"></p>
+    </div>
+
+    <div id="finalScreen" class="hidden final">
+        <h1>🎉 FELICIDADES ÁFRICA 🎉</h1>
+
+        <p>
+        Has superado todas las pruebas.
+        </p>
+
+        <p>
+        Has demostrado que conoces muy bien nuestra historia.
+        </p>
+
+        <p>
+        Tu recompensa no está en una caja.
+        </p>
+
+        <p>
+        No lleva lazo.
+        </p>
+
+        <p>
+        No cabe debajo de una cama.
+        </p>
+
+        <h2>✈️ Del 21 al 24 de octubre nos espera una nueva aventura.</h2>
+
+        <p>
+        El destino sigue siendo secreto...
+        </p>
+
+        <p>
+        Solo puedo darte una pista:
+        </p>
+
+        <h2>❤️ Va a merecer muchísimo la pena ❤️</h2>
+
+        <p>
+        Te quiero, Bichito.
+        </p>
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question: `
+<h2>🦁 Prueba 1</h2>
+<p>
+Tiene melena.<br>
+Es fuerte.<br>
+Es valiente.<br>
+Y ocupa un lugar especial en nuestra historia.<br><br>
+
+¿Qué animal es?
+</p>
+`,
+answers:["LEON","LEÓN"]
+},
+
+{
+question: `
+<h2>🏝️ Prueba 2</h2>
+<p>
+La isla donde compartimos algunos de nuestros mejores recuerdos juntos.
+</p>
+`,
+answers:["MENORCA"]
+},
+
+{
+question: `
+<h2>🐛 Prueba 3</h2>
+<p>
+Hay muchas formas de llamar a alguien que quieres.<br><br>
+
+Pero hay una que uso especialmente contigo.<br><br>
+
+¿Cómo te llamo?
+</p>
+`,
+answers:["BICHITO"]
+},
+
+{
+question: `
+<h2>🚲 Prueba 4</h2>
+<p>
+Bicicletas por todas partes.<br>
+Canales cruzando la ciudad.<br>
+Casas estrechas inclinadas.<br><br>
+
+Un viaje que hicimos juntos y que nunca olvidaremos.<br><br>
+
+¿Qué ciudad es?
+</p>
+`,
+answers:["AMSTERDAM","ÁMSTERDAM"]
+},
+
+{
+question: `
+<h2>🏍️ Prueba 5</h2>
+<p>
+Lleva el 37.<br>
+Corre en MotoGP.<br>
+Es joven.<br>
+Tiene más gas que sentido común.<br><br>
+
+Y es mi piloto favorito.<br><br>
+
+¿Quién es?
+</p>
+`,
+answers:["PEDRO ACOSTA","ACOSTA"]
+},
+
+{
+question: `
+<h2>🩺 Prueba 6</h2>
+<p>
+Trabajo en quirófano.<br>
+Arreglo huesos, articulaciones y fracturas.<br><br>
+
+Cuando alguien se cae de una moto, suelo aparecer yo.<br><br>
+
+¿Cuál es mi especialidad?
+</p>
+`,
+answers:["TRAUMATOLOGO","TRAUMATÓLOGO","TRAUMATOLOGIA","TRAUMATOLOGÍA"]
+},
+
+{
+question: `
+<h2>✈️ Prueba Final</h2>
+<p>
+Hay regalos que se pueden tocar.<br>
+Otros se pueden guardar.<br><br>
+
+Pero el mejor regalo que puedo darte este año tiene alas, maleta y destino.<br><br>
+
+¿Qué es?
+</p>
+`,
+answers:["VIAJE"]
+}
+
+];
+
+let current = 0;
+
+function loadQuestion(){
+    document.getElementById("question").innerHTML = questions[current].question;
+    document.getElementById("answer").value = "";
+    document.getElementById("feedback").innerText = "";
+}
+
+function normalize(text){
+    return text
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .trim();
+}
+
+function checkAnswer(){
+
+    const userAnswer = normalize(
+        document.getElementById("answer").value
+    );
+
+    const validAnswers = questions[current].answers.map(a => normalize(a));
+
+    if(validAnswers.includes(userAnswer)){
+
+        current++;
+
+        if(current >= questions.length){
+
+            document.getElementById("game").classList.add("hidden");
+            document.getElementById("finalScreen").classList.remove("hidden");
+
+        }else{
+
+            document.getElementById("feedback").innerText =
+            "✅ ¡Correcto!";
+
+            setTimeout(loadQuestion,1200);
+        }
+
+    }else{
+
+        document.getElementById("feedback").innerText =
+        "❌ Esa no es la respuesta correcta.";
+    }
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
