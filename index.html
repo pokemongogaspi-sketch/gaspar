@@ -3,292 +3,537 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Misión Cumpleaños 🎁</title>
+<title>Misión Cumpleaños ❤️</title>
 
 <style>
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:linear-gradient(135deg,#111,#222);
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    text-align:center;
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
 }
 
-.container{
-    width:90%;
-    max-width:700px;
-    background:#1e1e1e;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 0 30px rgba(255,255,255,0.1);
+body{
+background:linear-gradient(135deg,#f8f5ee,#efe8d8);
+color:#111;
+overflow:hidden;
+}
+
+.progress{
+position:fixed;
+top:0;
+left:0;
+height:6px;
+background:#c9a227;
+width:0%;
+transition:.4s;
+z-index:999;
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100vh;
+padding:35px;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+text-align:center;
+}
+
+.slide.active{
+display:flex;
+animation:fade .4s ease;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateX(20px);
+}
+to{
+opacity:1;
+transform:translateX(0);
+}
 }
 
 h1{
-    color:#ffd700;
+font-size:2.2rem;
+margin-bottom:20px;
+color:#8b6b00;
+}
+
+h2{
+font-size:1.8rem;
+margin-bottom:20px;
+color:#8b6b00;
+}
+
+.emoji{
+font-size:75px;
+margin-bottom:20px;
+}
+
+p{
+font-size:1.2rem;
+line-height:1.8;
+max-width:700px;
+white-space:pre-line;
 }
 
 input{
-    width:80%;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    margin-top:20px;
-    font-size:18px;
+width:85%;
+max-width:350px;
+padding:15px;
+margin-top:25px;
+border-radius:14px;
+border:2px solid #d6c9a5;
+font-size:18px;
+text-align:center;
+background:white;
+color:#111;
 }
 
 button{
-    margin-top:15px;
-    padding:12px 25px;
-    border:none;
-    border-radius:10px;
-    background:#ffd700;
-    font-weight:bold;
-    cursor:pointer;
+margin-top:18px;
+padding:15px 30px;
+border:none;
+border-radius:14px;
+background:#c9a227;
+color:white;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
 }
 
-button:hover{
-    opacity:0.9;
+.feedback{
+height:30px;
+margin-top:15px;
+font-size:18px;
 }
 
-.hidden{
-    display:none;
+.final-heart{
+font-size:60px;
+margin-top:20px;
+animation:pulse 2s infinite;
 }
 
-.success{
-    color:#7CFC00;
-    margin-top:15px;
+@keyframes pulse{
+50%{
+transform:scale(1.15);
+}
 }
 
-.final{
-    animation:fadeIn 2s;
+.penguin-gif{
+width:200px;
+height:200px;
+margin:20px auto;
+border-radius:20px;
 }
 
-@keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
-}
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
+<div class="progress" id="progress"></div>
 
-    <h1>🎁 Misión Cumpleaños 🎁</h1>
-
-    <div id="game">
-        <p id="question"></p>
-
-        <input type="text" id="answer" placeholder="Escribe tu respuesta">
-        <br>
-        <button onclick="checkAnswer()">Responder</button>
-
-        <p id="feedback" class="success"></p>
-    </div>
-
-    <div id="finalScreen" class="hidden final">
-        <h1>🎉 FELICIDADES ÁFRICA 🎉</h1>
-
-        <p>
-        Has superado todas las pruebas.
-        </p>
-
-        <p>
-        Has demostrado que conoces muy bien nuestra historia.
-        </p>
-
-        <p>
-        Tu recompensa no está en una caja.
-        </p>
-
-        <p>
-        No lleva lazo.
-        </p>
-
-        <p>
-        No cabe debajo de una cama.
-        </p>
-
-        <h2>✈️ Del 21 al 24 de octubre nos espera una nueva aventura.</h2>
-
-        <p>
-        El destino sigue siendo secreto...
-        </p>
-
-        <p>
-        Solo puedo darte una pista:
-        </p>
-
-        <h2>❤️ Va a merecer muchísimo la pena ❤️</h2>
-
-        <p>
-        Te quiero, Bichito.
-        </p>
-    </div>
-
-</div>
+<div id="slides"></div>
 
 <script>
 
-const questions = [
+const slides = [
 
 {
-question: `
-<h2>🦁 Prueba 1</h2>
-<p>
-Tiene melena.<br>
-Es fuerte.<br>
-Es valiente.<br>
-Y ocupa un lugar especial en nuestra historia.<br><br>
+type:"intro",
+emoji:"🎁",
+title:"Misión Cumpleaños",
+text:`
+Hola, África.
+
+Hoy no vas a recibir tu regalo.
+
+Tendrás que encontrarlo.
+
+Delante de ti hay una serie de pruebas.
+
+Algunas hablan de nosotros.
+
+Otras hablan de recuerdos.
+
+Y todas te acercarán un poco más a la sorpresa final.
+
+¿Preparada para comenzar la misión?
+`
+},
+
+{
+emoji:"🦁",
+question:`
+Empezamos con algo sencillo.
+
+Tiene melena.
+
+Es fuerte.
+
+Es valiente.
+
+Y ocupa un lugar especial en nuestra historia.
 
 ¿Qué animal es?
-</p>
 `,
 answers:["LEON","LEÓN"]
 },
 
 {
-question: `
-<h2>🏝️ Prueba 2</h2>
-<p>
-La isla donde compartimos algunos de nuestros mejores recuerdos juntos.
-</p>
+emoji:"🏝️",
+question:`
+Ahora viaja un momento en tu memoria.
+
+Una isla.
+
+Sol.
+
+Mar.
+
+Y muchos recuerdos juntos.
+
+¿De qué isla estamos hablando?
 `,
 answers:["MENORCA"]
 },
 
 {
-question: `
-<h2>🐛 Prueba 3</h2>
-<p>
-Hay muchas formas de llamar a alguien que quieres.<br><br>
+emoji:"🍸",
+question:`
+A veces lleva vodka.
 
-Pero hay una que uso especialmente contigo.<br><br>
+A veces lleva café.
+
+Siempre sabe mejor cuando la compartimos.
+
+¿De qué cóctel estamos hablando?
+`,
+answers:["ESPRESSO MARTINI"]
+},
+
+{
+emoji:"🏥",
+question:`
+Entre batas.
+
+Entre quirófanos.
+
+Entre historias que terminaban bien.
+
+¿Dónde nos conocimos?
+`,
+answers:["HOSPITAL"]
+},
+
+{
+emoji:"🐛",
+question:`
+Esta debería ser fácil.
+
+Hay muchas formas de llamar a alguien que quieres.
+
+Pero hay una que uso contigo más que ninguna otra.
 
 ¿Cómo te llamo?
-</p>
 `,
 answers:["BICHITO"]
 },
 
 {
-question: `
-<h2>🚲 Prueba 4</h2>
-<p>
-Bicicletas por todas partes.<br>
-Canales cruzando la ciudad.<br>
-Casas estrechas inclinadas.<br><br>
+emoji:"🚲",
+question:`
+Toca salir de España.
 
-Un viaje que hicimos juntos y que nunca olvidaremos.<br><br>
+Bicicletas por todas partes.
+
+Canales.
+
+Puentes.
+
+Y un viaje que nos dejó muy buenos recuerdos.
 
 ¿Qué ciudad es?
-</p>
 `,
 answers:["AMSTERDAM","ÁMSTERDAM"]
 },
 
 {
-question: `
-<h2>🏍️ Prueba 5</h2>
-<p>
-Lleva el 37.<br>
-Corre en MotoGP.<br>
-Es joven.<br>
-Tiene más gas que sentido común.<br><br>
+emoji:"🏍️",
+question:`
+Atención, pregunta de experto.
 
-Y es mi piloto favorito.<br><br>
+Lleva el 37.
+
+Va muy rápido.
+
+Me hace levantarme temprano algunos domingos.
+
+Y es mi piloto favorito.
 
 ¿Quién es?
-</p>
 `,
 answers:["PEDRO ACOSTA","ACOSTA"]
 },
 
 {
-question: `
-<h2>🩺 Prueba 6</h2>
-<p>
-Trabajo en quirófano.<br>
-Arreglo huesos, articulaciones y fracturas.<br><br>
+emoji:"🩺",
+question:`
+Esta la sabes seguro.
 
-Cuando alguien se cae de una moto, suelo aparecer yo.<br><br>
+Paso muchas horas en quirófano.
+
+Arreglo huesos, articulaciones y fracturas.
+
+Cuando alguien se cae de una moto suelo tener trabajo.
 
 ¿Cuál es mi especialidad?
-</p>
 `,
-answers:["TRAUMATOLOGO","TRAUMATÓLOGO","TRAUMATOLOGIA","TRAUMATOLOGÍA"]
+answers:[
+"TRAUMATOLOGO",
+"TRAUMATÓLOGO",
+"TRAUMATOLOGIA",
+"TRAUMATOLOGÍA"
+]
 },
 
 {
-question: `
-<h2>✈️ Prueba Final</h2>
-<p>
-Hay regalos que se pueden tocar.<br>
-Otros se pueden guardar.<br><br>
+emoji:"😏",
+question:`
+Hay muchas fechas importantes.
 
-Pero el mejor regalo que puedo darte este año tiene alas, maleta y destino.<br><br>
+Cumpleaños.
+
+Aniversarios.
+
+Vacaciones.
+
+Pero luego está ESA fecha.
+
+La que nosotros conocemos perfectamente.
+
+¿Cuál es nuestro polvoversario?
+`,
+answers:[
+"31 JULIO",
+"31 DE JULIO",
+"31/07",
+"31-07"
+]
+},
+
+{
+emoji:"❤️",
+question:`
+Esta es la más difícil.
+
+Es enfermera.
+
+Es preciosa.
+
+Tiene un novio traumatólogo un poco pesado.
+
+¿Quién es?
+`,
+answers:["AFRICA","ÁFRICA"]
+},
+
+{
+emoji:"✈️",
+question:`
+Ya estás muy cerca.
+
+Hay regalos que se pueden tocar.
+
+Otros se pueden guardar.
+
+Pero el mejor regalo que puedo darte este año tiene alas, maleta y destino.
 
 ¿Qué es?
-</p>
 `,
 answers:["VIAJE"]
+},
+
+{
+type:"final",
+emoji:"❤️",
+title:"Enhorabuena",
+text:`
+Has completado la misión.
+
+Has demostrado que conoces bastante bien nuestra historia.
+
+Y ahora llega tu recompensa.
+
+De momento solo puedo darte unas instrucciones:
+
+📅 Reserva los días del 21 al 24 de octubre.
+
+🧳 Prepara una maleta.
+
+✈️ Ten ganas de aventura.
+
+😏 Y no intentes sacarme el destino, porque no pienso decírtelo.
+
+Solo puedo prometerte una cosa:
+
+Va a ser un viaje muy especial.
+
+❤️
+
+Te quiero, Bichito.
+`,
+hasPenguinGif: true
 }
 
 ];
 
 let current = 0;
 
-function loadQuestion(){
-    document.getElementById("question").innerHTML = questions[current].question;
-    document.getElementById("answer").value = "";
-    document.getElementById("feedback").innerText = "";
-}
-
 function normalize(text){
-    return text
-        .toUpperCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g,"")
-        .trim();
+return text
+.toUpperCase()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.trim();
 }
 
-function checkAnswer(){
+function render(){
 
-    const userAnswer = normalize(
-        document.getElementById("answer").value
-    );
+const container = document.getElementById("slides");
+container.innerHTML = "";
 
-    const validAnswers = questions[current].answers.map(a => normalize(a));
+slides.forEach((slide,index)=>{
 
-    if(validAnswers.includes(userAnswer)){
+const div = document.createElement("div");
+div.className = "slide";
 
-        current++;
-
-        if(current >= questions.length){
-
-            document.getElementById("game").classList.add("hidden");
-            document.getElementById("finalScreen").classList.remove("hidden");
-
-        }else{
-
-            document.getElementById("feedback").innerText =
-            "✅ ¡Correcto!";
-
-            setTimeout(loadQuestion,1200);
-        }
-
-    }else{
-
-        document.getElementById("feedback").innerText =
-        "❌ Esa no es la respuesta correcta.";
-    }
+if(index === current){
+div.classList.add("active");
 }
 
-loadQuestion();
+if(slide.type === "intro"){
+
+div.innerHTML = `
+<div class="emoji">${slide.emoji}</div>
+<h1>${slide.title}</h1>
+<p>${slide.text}</p>
+<button onclick="nextSlide()">EMPEZAR</button>
+`;
+
+}
+
+else if(slide.type === "final"){
+
+div.innerHTML = `
+<div class="emoji">${slide.emoji}</div>
+<h1>${slide.title}</h1>
+<p>${slide.text}</p>
+${slide.hasPenguinGif ? '<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWd5Z2Q5eWZ6eGZ5eWZ6eGZ5eWZ6eGZ5eWZ6eGZ5eWZ6eGZ5eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6Zt6KHxJTbCO8VXa/giphy.gif" alt="Pingüinos" class="penguin-gif">' : ''}
+<div class="final-heart">❤️</div>
+`;
+
+}
+
+else{
+
+div.innerHTML = `
+<div class="emoji">${slide.emoji}</div>
+<h2>Prueba ${index}</h2>
+<p>${slide.question}</p>
+
+<input
+type="text"
+id="answer${index}"
+placeholder="Escribe tu respuesta">
+
+<button onclick="checkAnswer(${index})">
+Responder
+</button>
+
+<div class="feedback" id="feedback${index}"></div>
+`;
+
+}
+
+container.appendChild(div);
+
+});
+
+updateProgress();
+
+// Enfocar automáticamente el input de la nueva diapositiva si existe
+setTimeout(() => {
+const nextInput = document.getElementById("answer" + current);
+if (nextInput) {
+nextInput.focus();
+}
+}, 100);
+
+}
+
+function updateProgress(){
+
+const percent =
+(current/(slides.length-1))*100;
+
+document.getElementById("progress").style.width =
+percent + "%";
+
+}
+
+function nextSlide(){
+
+current++;
+
+render();
+
+}
+
+function checkAnswer(index){
+
+const value =
+document.getElementById("answer"+index).value;
+
+const normalized =
+normalize(value);
+
+const valid =
+slides[index].answers.map(a=>normalize(a));
+
+const feedback =
+document.getElementById("feedback"+index);
+
+if(valid.includes(normalized)){
+
+feedback.innerHTML = "✅ Correcto";
+
+setTimeout(()=>{
+nextSlide();
+},800);
+
+}else{
+
+feedback.innerHTML =
+"❌ Inténtalo otra vez";
+
+if(navigator.vibrate){
+navigator.vibrate(150);
+}
+
+}
+
+}
+
+render();
 
 </script>
 
